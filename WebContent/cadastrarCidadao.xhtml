@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<h:outputStylesheet library="font-awesome" name="css/font-awesome.css" />
+	<title>Cadastro de Cidadao</title>
+	<style>
+body {
+	background-image: url("#{resource['images/background_login.png']}");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+</style>
+</h:head>
+<h:body>
+	<h:form prependId="false">
+		<p:growl autoUpdate="true" globalOnly="false" />
+		<p:dialog visible="true" responsive="true" resizable="false"
+			closable="false" styleClass="ui-fluid" draggable="false" height="400"
+			width="500" showEffect="drop" hideEffect="drop">
+			<p:panel id="cadastro" header="Criar conta do cidadão">
+				<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+					layout="grid">
+
+					<p:outputLabel for="nomeUsuario" value="Nome do Usuário:" />
+					<p:inputText id="nomeUsuario" required="true"
+						requiredMessage="Nome do Usuário é obrigatório."
+						value="#{cadastroCidadaoMB.nomeUsuario}" maxlength="20" size="20" />
+
+					<p:outputLabel for="senha" value="Senha:" />
+					<p:password id="senha" required="true"
+						requiredMessage="Senha é obrigatória."
+						value="#{cadastroCidadaoMB.senha}" maxlength="20" size="20" />
+
+					<p:outputLabel for="primNome" value="Primeiro nome:" />
+					<p:inputText id="primNome" required="true"
+						requiredMessage="Primeiro nome é obrigatório."
+						value="#{cadastroCidadaoMB.primeiroNome}" maxlength="15" size="15" />
+
+					<p:outputLabel for="ultNome" value="Último nome:" />
+					<p:inputText id="ultNome" required="true"
+						requiredMessage="Último nome é obrigatório."
+						value="#{cadastroCidadaoMB.ultimoNome}" maxlength="20" size="20" />
+
+					<p:outputLabel for="email" value="E-mail:" />
+					<p:inputText id="email" value="#{cadastroCidadaoMB.email}"
+						maxlength="30" size="30" />
+
+					<p:outputLabel for="logradouro" value="Logradouro:" />
+					<p:inputText id="logradouro"
+						value="#{cadastroCidadaoMB.logradouro}" maxlength="100" size="100" />
+
+					<p:outputLabel for="numero" value="Número:" />
+					<p:inputText id="numero" value="#{cadastroCidadaoMB.numero}"
+						maxlength="10" size="10" />
+
+					<p:outputLabel for="bairro" value="Bairro:" />
+					<p:inputText id="bairro" value="#{cadastroCidadaoMB.bairro}"
+						maxlength="60" size="60" />
+
+					<p:outputLabel for="cidade" value="Cidade:" />
+					<p:inputText id="cidade" value="#{cadastroCidadaoMB.cidade}"
+						maxlength="60" size="60" />
+
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					styleClass="ui-panelgrid-blank">
+					<p:commandButton value="Cadastrar"
+						icon="fa fa-user-plus"
+						action="#{cadastroCidadaoMB.cadastrar}" ajax="false" />
+
+					<p:commandButton value="Cancelar"
+						icon="fa fa-times-circle" action="loginCidadao"
+						ajax="false" immediate="true" />
+				</p:panelGrid>
+			</p:panel>
+		</p:dialog>
+	</h:form>
+</h:body>
+</html>

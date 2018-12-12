@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<h:outputStylesheet library="css" name="leaflet.css" />
+	<h:outputStylesheet library="css" name="L.Control.MousePosition.css" />
+	<h:outputStylesheet library="css" name="MarkerCluster.css" />
+	<h:outputStylesheet library="css" name="MarkerCluster.Default.css" />
+	<h:outputStylesheet library="css" name="easy-button.css" />
+	<h:outputStylesheet library="css" name="estilos.css" />
+	<h:outputStylesheet library="font-awesome" name="css/font-awesome.css" />
+	<h:outputStylesheet library="sidebar" name="L.Control.Sidebar.css" />
+	<h:outputStylesheet library="leaflet-areaselect"
+		name="leaflet-areaselect.css" />
+	<h:outputScript name="leaflet.js" library="js" />
+	<h:outputScript name="L.Control.MousePosition.js" library="js" />
+	<h:outputScript name="jquery/jquery-plugins.js" library="primefaces" />
+	<h:outputScript name="leaflet.markercluster.js" library="js" />
+	<h:outputScript name="easy-button.js" library="js" />
+	<h:outputScript name="leaflet-areaselect.js"
+		library="leaflet-areaselect" />
+	<title>Administrador</title>
+</h:head>
+<h:body>
+	<p:growl autoUpdate="true" globalOnly="false" life="10000" />
+	<h:form prependId="false">
+		<p:dialog header="Consulta por Data" responsive="true"
+			resizable="false" closable="false" styleClass="ui-fluid"
+			draggable="false" height="200" width="500" showEffect="drop"
+			hideEffect="drop" widgetVar="wConsultarData" modal="true"
+			closeOnEscape="true">
+			<p:remoteCommand name="consultarPorData" process="@form"
+				actionListener="#{problemaAdministradorMB.consultarPorData}"
+				oncomplete="if(args.parametros){parametrosProblemas(xhr, status, args);PF('wConsultarData').hide();}"
+				update="formFiltrosConsultas">
+
+			</p:remoteCommand>
+			<p:panel header="Escolha as datas para consultar: ">
+				<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+					layout="grid">
+					<p:outputLabel for="de" value="De: " />
+					<p:calendar id="de" converter="converterData" required="true"
+						requiredMessage="A data 'De: ' é necessária"
+						value="#{problemaAdministradorMB.de}" pattern="dd/MM/yyyy" />
+
+					<p:outputLabel for="ate" value="Até: " />
+					<p:calendar id="ate" converter="converterData" required="true"
+						requiredMessage="A data 'Até: ' é necessária"
+						value="#{problemaAdministradorMB.ate}" pattern="dd/MM/yyyy" />
+
+				</p:panelGrid>
+				<p:separator />
+				<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+					layout="grid">
+					<p:commandButton type="button" value="Consultar"
+						icon="fa fa-search"
+						onclick="primeiraConsulta();consultarPorData();" />
+					<p:commandButton type="button" value="Fechar"
+						icon="fa fa-arrow-left"
+						onclick="PF('wConsultarData').hide();buttonData.state('mostrar-consultar-data')" />
+				</p:panelGrid>
+			</p:panel>
+		</p:dialog>
+	</h:form>
+	<h:form prependId="false">
+		<p:dialog header="Consulta por Área e Sub-Área" responsive="true"
+			resizable="false" closable="false" styleClass="ui-fluid"
+			draggable="false" height="200" width="500" showEffect="drop"
+			hideEffect="drop" widgetVar="wConsultarArea" modal="true"
+			closeOnEscape="true">
+			<p:remoteCommand name="consultarPorArea" process="@form"
+				action="#{problemaAdministradorMB.consultarPorAreaESubarea}"
+				oncomplete="if(args.parametros){parametrosProblemas(xhr, status, args);PF('wConsultarArea').hide()}"
+				update="formFiltrosConsultas" />
+			<p:panel header="Insira os dados abaixo: ">
+				<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+					layout="grid">
+
+					<p:outputLabel for="areas" value="Área:" />
+					<p:selectOneMenu id="areas"
+						value="#{problemaAdministradorMB.areaSelecionada}"
+						converter="converterArea" required="true"
+						requiredMessage="Selecione uma Área">
+						<p:ajax listener="#{problemaAdministradorMB.areaEscolhida}"
+							update="subareas" />
+						<f:selectItem itemLabel="Selecione..." itemValue="#{null}"
+							noSelectionOption="true" />
+						<f:selectItems value="#{problemaAdministradorMB.areas}" var="area"
+							itemLabel="#{area.nome}" itemValue="#{area}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="subareas" value="Sub-Área: " />
+					<p:selectOneMenu id="subareas"
+						value="#{problemaAdministradorMB.subAreaSelecionada}"
+						converter="converterSubArea" required="true"
+						requiredMessage="Selecione uma Sub-Área">
+						<f:selectItem itemLabel="Selecione..." itemValue="#{null}"
+							noSelectionOption="true" />
+						<f:selectItems value="#{problemaAdministradorMB.subAreas}"
+							var="subArea" itemLabel="#{subArea.nome}" itemValue="#{subArea}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+				<p:separator />
+
+				<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+					layout="grid">
+					<p:commandButton type="button" value="Consultar"
+						icon="fa fa-search"
+						onclick="primeiraConsulta();consultarPorArea();" />
+
+					<p:commandButton type="button" value="Fechar"
+						icon="fa fa-arrow-left"
+						onclick="PF('wConsultarArea').hide();buttonArea.state('mostrar-consulta-area')" />
+				</p:panelGrid>
+			</p:panel>
+		</p:dialog>
+	</h:form>
+	<h:form prependId="false">
+		<p:dialog header="Consulta por resposta" responsive="true"
+			resizable="false" closable="false" styleClass="ui-fluid"
+			draggable="false" height="200" width="500" showEffect="drop"
+			hideEffect="drop" widgetVar="wConsultarTipoResposta" modal="true"
+			closeOnEscape="true">
+			<p:remoteCommand name="consultarPorResposta" process="@form"
+				actionListener="#{problemaAdministradorMB.consultarPorResposta}"
+				oncomplete="if(args.parametros){parametrosProblemas(xhr, status, args);PF('wConsultarTipoResposta').hide()}"
+				update="formFiltrosConsultas" />
+			<p:panel header="Escolha uma das opções abaixo: ">
+				<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+					layout="grid">
+
+					<p:outputLabel for="respostas" value="Respostas: " />
+					<p:selectOneRadio id="respostas"
+						value="#{problemaAdministradorMB.tipoResposta}"
+						layout="responsive" columns="1" required="true"
+						requiredMessage="Escolha uma das opções para realizar a consulta">
+						<f:selectItem itemLabel="Respondido" itemValue="respondido" />
+						<f:selectItem itemLabel="A responder" itemValue="a-responder" />
+					</p:selectOneRadio>
+				</p:panelGrid>
+				<p:separator />
+
+				<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+					layout="grid">
+					<p:commandButton type="button" value="Consultar"
+						icon="fa fa-search"
+						onclick="primeiraConsulta();consultarPorResposta();" />
+
+					<p:commandButton type="button" value="Fechar"
+						icon="fa fa-arrow-left"
+						onclick="PF('wConsultarTipoResposta').hide();buttonResposta.state('mostrar-consulta-resposta')" />
+				</p:panelGrid>
+			</p:panel>
+		</p:dialog>
+	</h:form>
+	<div id="divDetalhesDoProblema" class="ui-g" style="display: none;">
+		<h:form prependId="false">
+			<h:outputScript>var erroAoResponder;</h:outputScript>
+			<p:remoteCommand name="responderProblema" process="@form"
+				actionListener="#{problemaAdministradorMB.responder}"
+				oncomplete="if(!erroAoResponder){if(tipoConsulta == 'data')consultarPorData();else if(tipoConsulta == 'area')consultarPorArea();else if(tipoConsulta == 'resposta')consultarPorResposta();else if(tipoConsulta == 'perimetro')consultarPorPerimetro;sidebarDDP.hide();}" />
+			<p:panel header="Detalhes do problema: ">
+				<p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+					<p:outputLabel for="areaC" value="Área: " />
+					<p:inputText id="areaC" readonly="true"
+						title="Sub-Área do problema" />
+					<p:outputLabel for="subareaC" value="Sub-Área: " />
+					<p:inputText id="subareaC" readonly="true"
+						title="Sub-Área do problema" />
+					<p:outputLabel for="dataC" value="Data: " />
+					<p:inputText id="dataC" readonly="true" title="Data do problema" />
+					<p:outputLabel for="descricaoC" value="Descrição: " />
+					<p:inputTextarea id="descricaoC" rows="8" cols="100"
+						style="resize:initial; overflow:auto;" readonly="true" />
+					<p:outputLabel for="resposta" value="Resposta: " />
+					<p:inputTextarea id="resposta" widgetVar="resposta" rows="8"
+						cols="100" style="resize:initial; overflow:auto;"
+						counter="display" maxlength="500"
+						counterTemplate="{0} caracteres restantes."
+						value="#{problemaAdministradorMB.resposta}" />
+					<p:outputLabel />
+					<p:outputLabel id="display" />
+				</p:panelGrid>
+				<p:separator />
+				<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+					layout="grid">
+
+					<p:commandButton value="Fechar" icon="fa fa-arrow-left"
+						onclick="sidebarDDP.hide();mapa.fitBounds(marcadores.getBounds());fecharPopup();" />
+					<p:commandButton type="button" widgetVar="btnResponder"
+						value="Responder" icon="fa fa-commenting"
+						onclick="responderProblema();" />
+				</p:panelGrid>
+			</p:panel>
+			<p:inputText id="idProblemaAResponder" style="display: none;"
+				value="#{problemaAdministradorMB.idProblemaAResponder}" />
+		</h:form>
+	</div>
+	<div id="divFiltrosConsultas" class="ui-g" style="display: none;">
+		<h:form id="formFiltrosConsultas" prependId="false">
+			<p:remoteCommand name="filtrar"
+				actionListener="#{problemaAdministradorMB.executarFiltros}"
+				oncomplete="if(args.parametros){parametrosProblemas(xhr, status, args);removeFiltro.style.display = 'block';}"
+				update="@form">
+			</p:remoteCommand>
+			<p:panel header="Filtrar problemas: ">
+				<p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+					<p:outputLabel for="dataFiltro" value="Datas: " />
+					<p:selectOneListbox id="dataFiltro"
+						value="#{problemaAdministradorMB.dataFiltro}" scrollHeight="150"
+						style="width: 250px;" converter="converterData">
+						<p:ajax event="change" oncomplete="filtrar();" />
+						<f:selectItems value="#{problemaAdministradorMB.datasFiltro}"
+							var="data"
+							itemLabel="#{data.getDayOfMonth()}/#{data.getMonthValue()}/#{data.getYear()}"
+							itemValue="#{data}" />
+					</p:selectOneListbox>
+
+					<p:outputLabel for="subAreaFiltro" value="Sub-áreas: " />
+					<p:selectOneListbox id="subAreaFiltro"
+						value="#{problemaAdministradorMB.subAreaFiltro}"
+						scrollHeight="150" style="width: 250px;"
+						converter="converterSubArea">
+						<p:ajax event="change" oncomplete="filtrar();" />
+						<f:selectItems value="#{problemaAdministradorMB.subAreasFiltro}"
+							var="sub" itemLabel="#{sub.getNome()}" itemValue="#{sub}" />
+					</p:selectOneListbox>
+
+					<p:outputLabel for="tipoRespostaFiltro" value="Respostas: " />
+					<p:selectOneListbox id="tipoRespostaFiltro"
+						value="#{problemaAdministradorMB.tipoRespostaFiltro}"
+						scrollHeight="150" style="width: 250px;">
+						<p:ajax event="change" oncomplete="filtrar();" />
+						<f:selectItems
+							value="#{problemaAdministradorMB.tiposRespostaFiltro}" />
+					</p:selectOneListbox>
+
+					<p:commandButton id="removeFiltro" value="Voltar"
+						action="#{problemaAdministradorMB.removerFiltro}"
+						style="display: none;"
+						oncomplete="if(args.parametros){parametrosProblemas(xhr, status, args);}"
+						update="dataFiltro,subAreaFiltro,tipoRespostaFiltro"
+						icon="fa fa-arrow-left" />
+				</p:panelGrid>
+			</p:panel>
+		</h:form>
+	</div>
+	<h:form prependId="false">
+		<p:dialog header="Confirmação de saída" widgetVar="sair" modal="true"
+			responsive="true" resizable="false" draggable="false"
+			closable="false" styleClass="ui-fluid">
+			<p align="center">Deseja realmente sair?</p>
+			<p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+				<p:commandButton value="Sim" icon="fa fa-check"
+					style="width: 135px;" ajax="false" action="#{loginAdmMB.logout}" />
+				<p:commandButton type="button" value="Não" icon="fa fa-times-circle"
+					onclick="PF('sair').hide();" style="width: 135px;" />
+			</p:panelGrid>
+		</p:dialog>
+	</h:form>
+	<h:form prependId="false">
+		<p:inputText id="boundsPerimetro" style="display: none;"
+			value="#{problemaAdministradorMB.boundsPerimetro}" />
+		<p:remoteCommand name="consultarPorPerimetro"
+			actionListener="#{problemaAdministradorMB.consultarPorPerimetro}"
+			oncomplete="if(args.parametros)parametrosProblemas(xhr, status, args)" />
+		<p:remoteCommand name="primeiraConsulta"
+			action="#{problemaAdministradorMB.ehprimeiraConsulta}" />
+	</h:form>
+	<div id="mapa" class="ui-fluid"
+		style="position: absolute; top: 0; left: 0; margin: 0; width: 100%; height: 100%;" />
+	<h:outputScript>var imgComResp = "${resource['images/com-resposta.png']}", imgSemResp = "${resource['images/sem-resposta.png']}",sombraIcones = "${resource['images/marker-shadow.png']}" ;</h:outputScript>
+	<h:outputScript name="mapa.js" library="js" />
+	<h:outputScript name="L.Control.Sidebar.js" library="sidebar" />
+	<h:outputScript name="admin.js" library="js" />
+</h:body>
+</html>

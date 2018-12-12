@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Filtrar por Áreas e Sub-áreas</title>
+</h:head>
+<h:body>
+	<h:form>
+		<p:growl autoUpdate="true" globalOnly="false" />
+		<h:panelGrid columns="2" style="margin-bottom:10px">
+
+			<p:outputLabel for="areas" value="Áreas:" />
+			<p:selectOneMenu id="areas" value="#{areaESubAreaMB.areaSelecionada}"
+				converter="converterArea" style="width: 200px;">
+				<p:ajax event="change" listener="#{areaESubAreaMB.areaEscolhida}"
+					update="subareas" process="@this" />
+				<f:selectItem itemLabel="Selecione..." itemValue="#{null}"
+					noSelectionOption="true" />
+				<f:selectItems value="#{areaESubAreaMB.areas}" var="area"
+					itemLabel="#{area.nome}" itemValue="#{area}" />
+			</p:selectOneMenu>
+
+			<p:outputLabel for="subareas" value="Sub-Áreas: " />
+			<p:selectOneMenu id="subareas"
+				value="#{areaESubAreaMB.subAreaSelecionada}"
+				converter="converterSubArea" style="width: 200px;">
+				<f:selectItem itemLabel="Selecione..." itemValue="#{null}"
+					noSelectionOption="true" />
+				<f:selectItems value="#{areaESubAreaMB.subAreas}" var="subArea"
+					itemLabel="#{subArea.nome}" itemValue="#{subArea}" />
+			</p:selectOneMenu>
+
+			<p:commandButton value="Filtrar" icon="ui-icon-search"
+				style="width: 35px;" />
+			<p:outputLabel value=" " />
+
+			<p:commandButton value="Sair" icon="ui-icon-arrowreturnthick-1-s"
+				style="width: 35px;" action="#{areaESubAreaMB.fecharFiltrarArea}" />
+			<p:outputLabel value=" " />
+
+		</h:panelGrid>
+	</h:form>
+</h:body>
+</html>

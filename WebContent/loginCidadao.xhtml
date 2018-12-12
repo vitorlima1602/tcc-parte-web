@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<h:outputStylesheet library="font-awesome" name="css/font-awesome.css" />
+	<title>Login ao Sistema</title>
+	<style>
+body {
+	background-image: url("#{resource['images/background_login.png']}");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+</style>
+</h:head>
+<h:body>
+	<h:form prependId="false">
+		<p:growl autoUpdate="true" globalOnly="false" />
+		<p:dialog visible="true" responsive="true" resizable="false"
+			closable="false" styleClass="ui-fluid" draggable="false" height="180"
+			width="500" showEffect="drop" hideEffect="drop">
+			<p:panel header="Login do Cidadão" style="height: 350; width:500;">
+				<p:panelGrid columns="2" layout="grid"
+					styleClass="ui-panelgrid-blank">
+					<p:outputLabel for="nomeUsuario" value="Nome do Usuário:" />
+					<p:inputText id="nomeUsuario" required="true"
+						requiredMessage="Nome do usuário obrigatório."
+						value="#{loginCidMB.nomeUsuario}" />
+					<p:outputLabel for="senha" value="Senha:" />
+					<p:password id="senha" required="true"
+						requiredMessage="Senha é obrigatória." value="#{loginCidMB.senha}" />
+					<p:commandButton value="Logar"
+						icon="fa fa-sign-in"
+						action="#{loginCidMB.autenticar}" ajax="false" />
+					<p:commandButton value="Voltar" icon="fa fa-arrow-left"
+						action="index" immediate="true" ajax="false"/>
+					<p:commandLink value="Cadastra-se"
+						style="text-align: center;" action="cadastrarCidadao"
+						immediate="true" ajax="false" />
+				</p:panelGrid>
+			</p:panel>
+		</p:dialog>
+	</h:form>
+</h:body>
+</html>
